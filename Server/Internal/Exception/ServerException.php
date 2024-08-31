@@ -27,6 +27,7 @@ declare(strict_types=1);
 
 namespace Prototype\Grpc\Server\Internal\Exception;
 
+use Amp\Http\HttpStatus;
 use Prototype\Grpc\StatusCode;
 
 /**
@@ -35,9 +36,13 @@ use Prototype\Grpc\StatusCode;
  */
 final class ServerException extends \Exception
 {
+    /**
+     * @param int<100, 511> $httpStatus
+     */
     public function __construct(
         public readonly StatusCode $status = StatusCode::INTERNAL,
         public readonly ?string $errorMessage = null,
+        public readonly int $httpStatus = HttpStatus::OK,
         ?\Throwable $previous = null,
     ) {
         parent::__construct(\sprintf('Unexpected error "%s" occurred.', $this->errorMessage ?: $this->status->name), previous: $previous);
